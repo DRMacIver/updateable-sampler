@@ -1,6 +1,7 @@
 import random
 
 import pytest
+from hypothesis import assume
 from hypothesis import example
 from hypothesis import given
 from hypothesis import strategies as st
@@ -64,3 +65,21 @@ def test_balanced_coin_sampler():
     cs = CoinSampler(false_weight=1, true_weight=1)
     n = sum(cs.sample(random) for _ in range(1000))
     assert 200 <= n <= 800
+
+
+@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@given(
+    weights=st.lists(st.integers(min_value=0), min_size=1),
+    data=st.data(),
+    rnd=st.randoms(use_true_random=True),
+)
+def test_boosting_increases_chances(cls, weights, data, rnd):
+    i = data.draw(st.integers(0, len(weights) - 1))
+    assume(sum(weights) > 0)
+    sampler = cls(weights)
+
+    sampler[i] = 10 * sampler.total_weight
+
+    n = sum(sampler.sample(rnd) == i for _ in range(100))
+
+    assert n >= 20

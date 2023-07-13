@@ -63,6 +63,8 @@ class UpdateableSampler:
             self.__pools[bi][i] = v
 
     def sample(self, random):
+        if self.total_weight == 0:
+            raise ValueError("Cannot sample with all 0 weights")
         bi = self.__bit_length_sampler.sample(random)
         return self.__pools[bi].sample(random)
 
