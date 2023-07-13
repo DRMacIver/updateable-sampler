@@ -16,7 +16,7 @@ classifiers = [
 Changelog = "https://github.com/DRMacIver/updateable-sampler/releases"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 click = ">=8.0.1"
 
 [tool.poetry.dev-dependencies]
@@ -47,6 +47,10 @@ myst-parser = {version = ">=0.16.1"}
 
 [tool.poetry.scripts]
 updateable-sampler = "updateable_sampler.__main__:main"
+
+[tool.poetry.group.dev.dependencies]
+hypothesis = "^6.81.1"
+pytest = "^7.4.0"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
