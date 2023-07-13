@@ -1,4 +1,7 @@
-class UpdateableSampler:
+from collections.abc import MutableSequence
+
+
+class UpdateableSampler(MutableSequence):
     def __init__(self, data=()):
         self.__weights = []
 
@@ -22,10 +25,6 @@ class UpdateableSampler:
         self.__weights.append(0)
         self[i] = weight
 
-    def extend(self, other):
-        for v in other:
-            self.append(v)
-
     def clear(self):
         self.__weights.clear()
         self.__bit_length_sampler = TreeBasedSampler()
@@ -39,29 +38,8 @@ class UpdateableSampler:
                 n += 1
         return n
 
-    def index(self, v):
-        for i, w in enumerate(self):
-            if w == v:
-                return i
-        raise ValueError(f"{v} not in list")
-
     def __convert_index(self, i):
         return range(len(self))[i]
-
-    def remove(self, v):
-        for i, w in enumerate(self):
-            if w == v:
-                del self[i]
-                return
-        raise ValueError(f"{v} not in list")
-
-    def reverse(self):
-        i = 0
-        j = len(self) - 1
-        while i < j:
-            self[i], self[j] = self[j], self[i]
-            i += 1
-            j -= 1
 
     def sort(self, **kwargs):
         values = sorted(self, **kwargs)
