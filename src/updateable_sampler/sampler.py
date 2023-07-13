@@ -17,9 +17,56 @@ class UpdateableSampler:
         return self.__bit_length_sampler.total_weight
 
     def append(self, weight: int):
+        check_weight(weight)
         i = len(self.__weights)
         self.__weights.append(0)
         self[i] = weight
+
+    def extend(self, other):
+        for v in other:
+            self.append(v)
+
+    def clear(self):
+        self.__weights.clear()
+        self.__bit_length_sampler = TreeBasedSampler()
+        self.__pools.clear()
+        self.__bit_lengths_index.clear()
+
+    def count(self, v):
+        n = 0
+        for w in self:
+            if w == v:
+                n += 1
+        return n
+
+    def index(self, v):
+        for i, w in enumerate(self):
+            if w == v:
+                return i
+        raise ValueError(f"{v} not in list")
+
+    def __convert_index(self, i):
+        return range(len(self))[i]
+
+    def remove(self, v):
+        for i, w in enumerate(self):
+            if w == v:
+                del self[i]
+                return
+        raise ValueError(f"{v} not in list")
+
+    def reverse(self):
+        i = 0
+        j = len(self) - 1
+        while i < j:
+            self[i], self[j] = self[j], self[i]
+            i += 1
+            j -= 1
+
+    def sort(self, **kwargs):
+        values = sorted(self, **kwargs)
+        for i, v in enumerate(values):
+            self[i] = v
 
     def pop(self):
         result = self.__weights[-1]
@@ -27,15 +74,62 @@ class UpdateableSampler:
         self.__weights.pop()
         return result
 
+    def insert(self, i, v):
+        self.append(0)
+        for j in range(len(self) - 1, i, -1):
+            self[j] = self[j - 1]
+        self[i] = v
+
+    def __iter__(self):
+        return iter(self.__weights)
+
+    def copy(self):
+        return UpdateableSampler(self.__weights)
+
+    def __copy__(self):
+        return self.copy()
+
+    def __deepcopy__(self, memo):
+        return self.__copy__()
+
+    def __reversed__(self):
+        return reversed(self.__weights)
+
     def __delitem__(self, i: int):
+        i = self.__convert_index(i)
+        if not isinstance(i, int):
+            for i in sorted(i, reverse=True):
+                del self[i]
+            return
         for j in range(i, len(self) - 1):
             self[j] = self[j + 1]
         self.pop()
+
+    def __eq__(self, other):
+        if not isinstance(other, UpdateableSampler):
+            return NotImplemented
+        if len(self) != len(other):
+            return False
+        for u, v in zip(self, other):
+            if u != v:
+                return False
+        return True
+
+    def __ne__(self, other):
+        if not isinstance(other, UpdateableSampler):
+            return NotImplemented
+        return not self.__eq__(other)
 
     def __getitem__(self, i: int) -> int:
         return self.__weights[i]
 
     def __setitem__(self, i: int, v: int):
+        i = self.__convert_index(i)
+        if not isinstance(i, int):
+            for j, w in zip(i, v, strict=True):
+                self[j] = w
+            return
+        check_weight(v)
         prev = self.__weights[i]
         self.__weights[i] = v
         if prev == v:
@@ -196,11 +290,6 @@ class TreeBasedSampler:
             j2 = i * 2 + 2
             self.__child_weights[i] = self.__total_weight(j1) + self.__total_weight(j2)
 
-    def __delitem__(self, i: int):
-        for j in range(i, len(self) - 1):
-            self[j] = self[j + 1]
-        self.pop()
-
     def __total_weight(self, i):
         if i >= len(self.__weights):
             return 0
@@ -230,3 +319,10 @@ class TreeBasedSampler:
                 i = j1
             else:
                 i = j2
+
+
+def check_weight(w):
+    if not isinstance(w, int):
+        raise TypeError(f"Invalid weight {repr(w)} of type {type(w).__name__}")
+    if w < 0:
+        raise ValueError(f"Invalid weight {w} < 0")

@@ -83,3 +83,29 @@ def test_boosting_increases_chances(cls, weights, data, rnd):
     n = sum(sampler.sample(rnd) == i for _ in range(100))
 
     assert n >= 20
+
+
+def test_cannot_sample_from_zero_weight():
+    x = UpdateableSampler([0])
+    with pytest.raises(ValueError):
+        x.sample(random)
+
+
+def test_equality():
+    x = UpdateableSampler([1, 2, 3])
+    assert x == x
+    assert x == x.copy()
+    assert x != list(x)
+    b = x == list(x)
+    assert not b
+
+    assert x != UpdateableSampler([1, 2, 3, 0])
+    assert x != UpdateableSampler([3, 2, 1])
+
+
+def test_invalid_weights():
+    with pytest.raises(TypeError):
+        UpdateableSampler([0.0])
+
+    with pytest.raises(ValueError):
+        UpdateableSampler([-1])
