@@ -1,15 +1,15 @@
-# Updateable Sampler
+# Updatable Sampler
 
 This package implements a data structure that stores a list of non-negative integer weights, with the ability to sample an index from the list, such that `i` is sampled with probability proportionate to `ls[i]`.
 
-This is provided by the single type `updateable_sampler.UpdateableSampler`,
+This is provided by the single type `updatable_sampler.UpdatableSampler`,
 whose interface is exactly that provided by `list`, with two additional attributes:
 
 * `total_weight` (property) is the current sum of the list.
 * `sample(random)` takes a Random instance (or the random module) and returns a random index into the list, sampling `i` with probability proportionate to its value.
 
 
-Other than this, and the restriction that its elements be non-negative integers, `UpdateableSampler` behaves exactly like a list.
+Other than this, and the restriction that its elements be non-negative integers, `UpdatableSampler` behaves exactly like a list.
 
 ## Performance
 

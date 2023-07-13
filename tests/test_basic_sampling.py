@@ -6,33 +6,33 @@ from hypothesis import example
 from hypothesis import given
 from hypothesis import strategies as st
 
-from updateable_sampler import UpdateableSampler
-from updateable_sampler.sampler import CoinSampler
-from updateable_sampler.sampler import TreeBasedSampler
+from updatable_sampler import UpdatableSampler
+from updatable_sampler.sampler import CoinSampler
+from updatable_sampler.sampler import TreeBasedSampler
 
 
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 def test_sampling_from_single_element(cls):
     sampler = cls([1])
     assert sampler.sample(random) == 0
     assert sampler[0] == 1
 
 
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 def test_sampling_correct_element(cls):
     sampler = cls([0, 1])
     for _ in range(100):
         assert sampler.sample(random) == 1
 
 
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 def test_empty_colletion_has_zero_weight(cls):
     sampler = cls()
     assert sampler.total_weight == 0
 
 
 @example(weights=[0, 0, 0, 0, 0, 0, 1])
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 @given(weights=st.lists(st.integers(min_value=0)))
 def test_has_correct_total_weight(weights, cls):
     sampler = cls(weights)
@@ -40,7 +40,7 @@ def test_has_correct_total_weight(weights, cls):
 
 
 @example(weights=[1, 1])
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 @given(weights=st.lists(st.integers(min_value=0), min_size=1))
 def test_pops_last_element(weights, cls):
     sampler = cls(weights)
@@ -67,7 +67,7 @@ def test_balanced_coin_sampler():
     assert 200 <= n <= 800
 
 
-@pytest.mark.parametrize("cls", [UpdateableSampler, TreeBasedSampler])
+@pytest.mark.parametrize("cls", [UpdatableSampler, TreeBasedSampler])
 @given(
     weights=st.lists(st.integers(min_value=0), min_size=1),
     data=st.data(),
@@ -86,26 +86,26 @@ def test_boosting_increases_chances(cls, weights, data, rnd):
 
 
 def test_cannot_sample_from_zero_weight():
-    x = UpdateableSampler([0])
+    x = UpdatableSampler([0])
     with pytest.raises(ValueError):
         x.sample(random)
 
 
 def test_equality():
-    x = UpdateableSampler([1, 2, 3])
+    x = UpdatableSampler([1, 2, 3])
     assert x == x
     assert x == x.copy()
     assert x != list(x)
     b = x == list(x)
     assert not b
 
-    assert x != UpdateableSampler([1, 2, 3, 0])
-    assert x != UpdateableSampler([3, 2, 1])
+    assert x != UpdatableSampler([1, 2, 3, 0])
+    assert x != UpdatableSampler([3, 2, 1])
 
 
 def test_invalid_weights():
     with pytest.raises(TypeError):
-        UpdateableSampler([0.0])
+        UpdatableSampler([0.0])
 
     with pytest.raises(ValueError):
-        UpdateableSampler([-1])
+        UpdatableSampler([-1])

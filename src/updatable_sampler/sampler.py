@@ -1,7 +1,7 @@
 from collections.abc import MutableSequence
 
 
-class UpdateableSampler(MutableSequence):
+class UpdatableSampler(MutableSequence):
     def __init__(self, data=()):
         self.__weights = []
 
@@ -62,7 +62,7 @@ class UpdateableSampler(MutableSequence):
         return iter(self.__weights)
 
     def copy(self):
-        return UpdateableSampler(self.__weights)
+        return UpdatableSampler(self.__weights)
 
     def __copy__(self):
         return self.copy()
@@ -84,7 +84,7 @@ class UpdateableSampler(MutableSequence):
         self.pop()
 
     def __eq__(self, other):
-        if not isinstance(other, UpdateableSampler):
+        if not isinstance(other, UpdatableSampler):
             return NotImplemented
         if len(self) != len(other):
             return False
@@ -94,7 +94,7 @@ class UpdateableSampler(MutableSequence):
         return True
 
     def __ne__(self, other):
-        if not isinstance(other, UpdateableSampler):
+        if not isinstance(other, UpdatableSampler):
             return NotImplemented
         return not self.__eq__(other)
 

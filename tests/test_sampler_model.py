@@ -6,8 +6,8 @@ from hypothesis.stateful import invariant
 from hypothesis.stateful import precondition
 from hypothesis.stateful import rule
 
-from updateable_sampler import UpdateableSampler
-from updateable_sampler.sampler import TreeBasedSampler
+from updatable_sampler import UpdatableSampler
+from updatable_sampler.sampler import TreeBasedSampler
 
 
 weights = st.just(0) | st.integers(min_value=0)
@@ -51,7 +51,7 @@ values = (
 class SamplerStateMachine(RuleBasedStateMachine):
     @initialize(weights=st.lists(weights), random=st.randoms(use_true_random=False))
     def start(self, weights, random):
-        self.sampler = UpdateableSampler(weights)
+        self.sampler = UpdatableSampler(weights)
         self.model_weights = weights
         self.random = random
 

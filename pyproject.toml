@@ -1,19 +1,19 @@
 [tool.poetry]
-name = "updateable-sampler"
+name = "updatable-sampler"
 version = "0.0.0"
-description = "Updateable Sampler"
+description = "Updatable Sampler"
 authors = ["David R. MacIver <david@drmaciver.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/DRMacIver/updateable-sampler"
-repository = "https://github.com/DRMacIver/updateable-sampler"
-documentation = "https://updateable-sampler.readthedocs.io"
+homepage = "https://github.com/DRMacIver/updatable-sampler"
+repository = "https://github.com/DRMacIver/updatable-sampler"
+documentation = "https://updatable-sampler.readthedocs.io"
 classifiers = [
     "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/DRMacIver/updateable-sampler/releases"
+Changelog = "https://github.com/DRMacIver/updatable-sampler/releases"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -46,7 +46,7 @@ xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 myst-parser = {version = ">=0.16.1"}
 
 [tool.poetry.scripts]
-updateable-sampler = "updateable_sampler.__main__:main"
+updatable-sampler = "updatable_sampler.__main__:main"
 
 [tool.poetry.group.dev.dependencies]
 hypothesis = "^6.81.1"
@@ -58,7 +58,7 @@ tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["updateable_sampler", "tests"]
+source = ["updatable_sampler", "tests"]
 
 [tool.coverage.report]
 show_missing = true

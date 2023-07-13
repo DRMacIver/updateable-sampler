@@ -1,1 +1,1 @@
-"""Test suite for the updateable_sampler package."""
+"""Test suite for the updatable_sampler package."""
